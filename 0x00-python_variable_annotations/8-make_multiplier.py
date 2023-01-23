@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """8-make_multiplier.py"""
+
 from typing import Callable
 
 
