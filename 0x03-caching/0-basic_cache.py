@@ -9,7 +9,8 @@ class BasicCache(BaseCaching):
         """ put """
         if key and item:
             self.cache_data[key] = item
-    
+
+
     def get(self, key):
         """ get """
         if key in self.cache_data:
