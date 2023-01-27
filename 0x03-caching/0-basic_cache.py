@@ -1,18 +1,19 @@
 #!/usr/bin/python3
-""" 0-basic_cache.py """
+''' self descriptive code '''
+
 BaseCaching = __import__('base_caching').BaseCaching
 
 
 class BasicCache(BaseCaching):
-    """ BasicCache """
+    ''' self descriptive '''
+
     def put(self, key, item):
-        """ put """
+        ''' self descriptive '''
         if key and item:
             self.cache_data[key] = item
 
-
     def get(self, key):
-        """ get """
+        ''' self descriptive '''
         if key in self.cache_data:
             return self.cache_data[key]
         return None
