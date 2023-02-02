@@ -3,6 +3,7 @@
 import mysql.connector
 import datetime
 
+
 def get_db():
     connection = mysql.connector.connect(
         user='root',
@@ -12,6 +13,7 @@ def get_db():
     )
     return connection
 
+
 def main():
     db = get_db()
     cursor = db.cursor()
@@ -19,8 +21,10 @@ def main():
     rows = cursor.fetchall()
 
     for row in rows:
-        filtered_data = "name=***; email=***; phone=***; ssn=***; password=***;"
-        log = "[HOLBERTON] user_data INFO {}: {} ip={}; last_login={}; user_agent={};".format(
+        filtered_data = "name=***; email=***; phone=***; \
+            ssn=***; password=***;"
+        log = "[HOLBERTON] user_data INFO {}: {} \
+            ip={}; last_login={}; user_agent={};".format(
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S,%f"),
             filtered_data,
             row[5],
@@ -28,6 +32,7 @@ def main():
             row[7]
         )
         print(log)
+
 
 if __name__ == "__main__":
     main()
