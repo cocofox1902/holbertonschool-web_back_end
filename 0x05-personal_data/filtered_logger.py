@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """ filtered_logger.py """
-# import mysql.connector
-import datetime
-import logging
 import re
+import logging
+from typing import List
+from os import environ
+from mysql.connector import connection
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -25,12 +26,6 @@ class RedactingFormatter(logging.Formatter):
         return filter_datum(self.fields, self.REDACTION,
                             super().format(record), self.SEPARATOR)
 
-def filter_datum(fields, redaction, message, separator):
-    """ filter_datum function """
-    pattern = "(" + separator.join(fields) +\
-        ")=([^" + separator + "]+)"
-    return re.sub(pattern, f"\\1={redaction}", message)
-
 
 def get_logger() -> logging.Logger:
     """ get_logger function """
@@ -41,6 +36,16 @@ def get_logger() -> logging.Logger:
     stream_handler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(stream_handler)
     return logger
+
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    """ filter_datum function """
+    for field in fields:
+        message = re.sub(f'{field}=(.*?){separator}',
+                         f'{field}={redaction}{separator}', message)
+    return message
 
 
 def get_db():
