@@ -8,15 +8,6 @@ import re
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
-def filter_datum(fields, redaction, message, separator):
-    """ filter_datum function """
-    for field in fields:
-        message = re.sub(f"{field}=\S+?{separator}",
-         f"{field}={redaction}{separator}",
-         message)
-    return message
-
-
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class """
 
@@ -25,16 +16,20 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields=None):
+        """ init function """
+        self.fields = fields
         super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = fields or []
 
     def format(self, record: logging.LogRecord) -> str:
         """ format function """
-        for field in self.fields:
-            record.msg = re.sub(f"{field}=\S+?;", 
-        f"{field}={self.REDACTION};",
-        record.msg)
-        return super().format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                            super().format(record), self.SEPARATOR)
+
+def filter_datum(fields, redaction, message, separator):
+    """ filter_datum function """
+    pattern = "(" + separator.join(fields) +\
+        ")=([^" + separator + "]+)"
+    return re.sub(pattern, f"\\1={redaction}", message)
 
 
 def get_logger() -> logging.Logger:
