@@ -5,6 +5,7 @@ import datetime
 
 
 def get_db():
+    """ get_db function """
     connection = mysql.connector.connect(
         user='root',
         password='root',
@@ -15,6 +16,7 @@ def get_db():
 
 
 def main():
+    """ main function """
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users")
