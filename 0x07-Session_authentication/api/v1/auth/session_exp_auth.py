@@ -24,13 +24,17 @@ class SessionExpAuth(SessionAuth):
         """
         if not user_id:
             return None
-        session_id = super().create_session(user_id)
+        try:
+            session_id = super().create_session(user_id)
+        except Exception:
+            return None
         if not session_id:
             return None
         user_id = self.user_id_by_session_id.get(session_id)
         if not user_id:
             return None
-        session_dictionary = {'user_id': user_id, 'created_at': datetime.now()}
+        created_at = datetime.now()
+        session_dictionary = {'user_id': user_id, 'created_at': created_at}
         self.user_id_by_session_id[session_id] = session_dictionary
         return session_id
 
@@ -38,6 +42,8 @@ class SessionExpAuth(SessionAuth):
         """ user_id_for_session_id method
         """
         if not session_id:
+            return None
+        if self.user_id_by_session_id not in session_id:
             return None
         session_dictionary = self.user_id_by_session_id.get(session_id)
         if session_dictionary:
