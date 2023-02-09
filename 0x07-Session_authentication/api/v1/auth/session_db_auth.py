@@ -2,7 +2,11 @@
 """ SessionDBAuth module
 """
 
-from api.v1.auth.session_exp_auth import SessionExpAuth
+from flask import request
+from datetime import datetime, timedelta
+
+from models.user_session import UserSession
+from .session_exp_auth import SessionExpAuth
 
 
 class SessionDBAuth(SessionExpAuth):
@@ -11,38 +15,42 @@ class SessionDBAuth(SessionExpAuth):
     def create_session(self, user_id=None):
         """ create_session method
         """
-        if not user_id:
-            return None
         session_id = super().create_session(user_id)
-        if not session_id:
-            return None
-        from models.user_session import UserSession
-        user_session = UserSession(user_id=user_id, session_id=session_id)
-        user_session.save()
-        return session_id
+        if type(session_id) == str:
+            kwargs = {
+                'user_id': user_id,
+                'session_id': session_id,
+            }
+            user_session = UserSession(**kwargs)
+            user_session.save()
+            return session_id
 
     def user_id_for_session_id(self, session_id=None):
         """ user_id_for_session_id method
         """
-        if not session_id:
+        try:
+            sessions = UserSession.search({'session_id': session_id})
+        except Exception:
             return None
-        from models.user_session import UserSession
-        user_session = UserSession.search({'session_id': session_id})
-        if not user_session:
+        if len(sessions) <= 0:
             return None
-        return user_session[0].user_id
+        cur_time = datetime.now()
+        time_span = timedelta(seconds=self.session_duration)
+        exp_time = sessions[0].created_at + time_span
+        if exp_time < cur_time:
+            return None
+        return sessions[0].user_id
+
 
     def destroy_session(self, request=None):
         """ destroy_session method
         """
-        if not request:
-            return False
         session_id = self.session_cookie(request)
-        if not session_id:
+        try:
+            sessions = UserSession.search({'session_id': session_id})
+        except Exception:
             return False
-        from models.user_session import UserSession
-        user_session = UserSession.search({'session_id': session_id})
-        if not user_session:
+        if len(sessions) <= 0:
             return False
-        user_session[0].remove()
+        sessions[0].remove()
         return True
