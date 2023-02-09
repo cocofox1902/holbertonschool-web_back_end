@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """ SessionAuth module2
 """
-from api.v1.app import *
-from flask import abort, jsonify, request
+from api.v1.views import app_views
+from flask import request, jsonify
 from models.user import User
-import os
+from api.v1.app import *
+from os import getenv
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
@@ -17,18 +18,17 @@ def login():
         return jsonify({"error": "email missing"}), 400
     if not password:
         return jsonify({"error": "password missing"}), 400
-    users = User.search({"email": email})
+    users = User.search({'email': email})
     if not users:
         return jsonify({"error": "no user found for this email"}), 404
     for user in users:
         if not user.is_valid_password(password):
             return jsonify({"error": "wrong password"}), 401
-        from api.v1.auth.session_auth import SessionAuth
         session_auth = SessionAuth()
         session_id = session_auth.create_session(user.id)
-        session_name = os.getenv("SESSION_NAME")
         response = jsonify(user.to_json())
-        response.set_cookie(session_name, session_id)
+        if getenv('SESSION_NAME'):
+            response.set_cookie(getenv('SESSION_NAME'), session_id)
         return response
 
 
@@ -38,7 +38,7 @@ def login():
 def logout():
     """ logout method
     """
-    destroy_session = auth.destroy_session(request)
-    if destroy_session:
+    if auth.destroy_session(request):
         return jsonify({}), 200
-    abort(404)
+    else:
+        abort(404)
