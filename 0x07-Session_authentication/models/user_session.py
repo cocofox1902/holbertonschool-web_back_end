@@ -1,17 +1,17 @@
-#!/usr/bin/env python3
-""" UserSession module
-"""
+# #!/usr/bin/env python3
+# """ UserSession module
+# """
 
-from models.base import Base
+# from models.base import Base
 
 
-class UserSession(Base):
-    """ UserSession class
-    """
-    def __init__(self, *args: list, **kwargs: dict):
-        """ init method
-        """
-        super().__init__(*args, **kwargs)
-        if not kwargs:
-            self.user_id = ""
-            self.session_id = ""
+# class UserSession(Base):
+#     """ UserSession class
+#     """
+#     def __init__(self, *args: list, **kwargs: dict):
+#         """ init method
+#         """
+#         super().__init__(*args, **kwargs)
+#         if not kwargs:
+#             self.user_id = ""
+#             self.session_id = ""
