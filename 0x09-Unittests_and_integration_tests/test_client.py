@@ -3,6 +3,7 @@
 """
 import unittest
 from parameterized import parameterized, parameterized_class
+import client
 from client import GithubOrgClient
 from unittest.mock import Mock, patch, PropertyMock
 from fixtures import TEST_PAYLOAD
@@ -26,16 +27,18 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(GithubOrgClient(org).org, test_payload)
             MockClass.assert_called_once_with(test_url)
 
-    @parameterized.expand([
-        ("random-url", {'repos_url': 'http://some_url.com'})
-    ])
-    def test_public_repos_url(self, name, result):
+    def test_public_repos_url(self):
         """ Test public_repos_url
         """
-        with patch('client.GithubOrgClient.org',
-                   PropertyMock(return_value=result)):
-            response = GithubOrgClient(name)._public_repos_url
-            self.assertEqual(response, result.get('repos_url'))
+        with patch(
+            'client.GithubOrgClient.org', new_callable=PropertyMock
+                ) as mc:
+            mc.return_value = {'repos_url': 'test.io'}
+            org_client = client
+            org_client = org_client.GithubOrgClient('test_org')
+            self.assertEqual(
+                org_client.org['repos_url'], org_client._public_repos_url
+                    )
 
     @patch('client.get_json')
     def test_public_repos(self, mocked_method):
