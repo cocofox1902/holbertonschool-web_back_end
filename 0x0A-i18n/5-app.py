@@ -37,7 +37,7 @@ def get_locale():
     return request.accept_languages.best_match(Config.LANGUAGES)
 
 
-def get_user(login_as):
+def get_user():
     """ get user
     """
     login_as = request.args.get("login_as", False)
@@ -48,6 +48,7 @@ def get_user(login_as):
     return None
 
 
+@app.before_request
 def before_request():
     """ before request
     """
