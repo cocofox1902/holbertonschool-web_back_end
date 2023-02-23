@@ -40,20 +40,18 @@ def get_locale():
 def get_user():
     """ get user
     """
-    login_as = request.args.get("login_as", False)
-    if login_as:
-        user = users.get(int(login_as), False)
-        if user:
-            return user
-    return None
+    user_id = request.args.get('login_as')
+    if user_id and int(user_id) in users:
+        return users[int(user_id)]
+    else:
+        return None
 
 
 @app.before_request
 def before_request():
     """ before request
     """
-    user = get_user()
-    g.user = user
+    g.user = get_user()
 
 
 @app.route("/", methods=["GET"])
