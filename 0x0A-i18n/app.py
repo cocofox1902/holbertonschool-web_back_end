@@ -93,7 +93,7 @@ def before_request():
 def render():
     """ render Function
     """
-    return render_template("6-index.html")
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
