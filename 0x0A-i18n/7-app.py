@@ -1,24 +1,12 @@
 #!/usr/bin/env python3
-""" Flask app
+"""
+app module
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-import pytz
 
 app = Flask(__name__)
-babel = Babel(app)
-
-
-class Config(object):
-    """ Config class
-    """
-    LANGUAGES = ["en", "fr"]
-
-
-app.config.from_object(Config)
-Babel.default_locale = 'en'
-Babel.default_timezone = 'UTC'
-
+babel = Babel()
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -28,9 +16,31 @@ users = {
 }
 
 
+@app.before_request
+def before_request():
+    """
+    before_request function
+    """
+    g.user = get_user()
+
+
+class Config(object):
+    """
+    Config class
+    """
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
+
+
+app.config.from_object(Config)
+babel.init_app(app)
+
+
 @babel.localeselector
 def get_locale():
-    """ get locale from request
+    """
+    get_locale function
     """
     locale = request.args.get("locale")
     if locale and locale in Config.LANGUAGES:
@@ -50,50 +60,38 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone():
-    """ get timezone from request
     """
-    try:
-        if request.args.get("timezone"):
-            timezone = request.args.get("timezone")
-            pytz.timezone(timezone)
-
-        elif g.user and g.user.get("timezone"):
-            timezone = g.user.get("timezone")
-            pytz.timezone(timezone)
-        else:
-            timezone = app.config["BABEL_DEFAULT_TIMEZONE"]
-            pytz.timezone(timezone)
-
-    except pytz.exceptions.UnknownTimeZoneError:
-        timezone = "UTC"
-
-    return timezone
-
-
-def get_user():
-    """ get user
+    get_timezone function
     """
-    login_as = request.args.get("login_as", False)
-    if login_as:
-        user = users.get(int(login_as), False)
-        if user:
-            return user
-    return None
+    timezone = request.args.get("timezone")
+    if timezone:
+        return timezone
 
+    if g.user:
+        timezone = g.user.get("timezone")
+        if timezone:
+            return timezone
 
-@app.before_request
-def before_request():
-    """ before request
-    """
-    user = get_user()
-    g.user = user
+    return request.headers.get("timezone")
 
 
 @app.route("/", methods=["GET"])
-def render():
-    """ render Function
+def index():
     """
-    return render_template("6-index.html")
+    index route
+    """
+    return render_template("7-index.html")
+
+
+def get_user():
+    """
+    get_user function
+    """
+    user_id = request.args.get('login_as')
+    if user_id and int(user_id) in users:
+        return users[int(user_id)]
+    else:
+        return None
 
 
 if __name__ == "__main__":

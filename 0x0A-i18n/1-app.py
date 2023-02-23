@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-""" Flask app
+"""
+app module
 """
 from flask import Flask, render_template
 from flask_babel import Babel
-
 app = Flask(__name__)
 babel = Babel(app)
 
 
 class Config(object):
-    """ Config class
+    """
+    Config class
     """
     LANGUAGES = ["en", "fr"]
 
@@ -20,8 +21,9 @@ Babel.default_timezone = 'UTC'
 
 
 @app.route("/", methods=["GET"])
-def render():
-    """ render Function
+def index():
+    """
+    index route
     """
     return render_template("1-index.html")
 

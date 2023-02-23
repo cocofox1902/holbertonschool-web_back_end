@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-""" Flask app
+"""
+app module
 """
 from flask import Flask, render_template
-
 app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
-def render():
-    """ render Function
+def index():
+    """
+    index route
     """
     return render_template("0-index.html")
 
