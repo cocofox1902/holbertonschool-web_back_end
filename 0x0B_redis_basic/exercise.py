@@ -50,7 +50,8 @@ def replay(method: callable) -> None:
     inputs = r.lrange(inputs, 0, -1)
     outputs = r.lrange(outputs, 0, -1)
     for i, o in zip(inputs, outputs):
-        print("{}(*{}) -> {}".format(method.__qualname__, i.decode('utf-8'), o.decode('utf-8')))
+        print("{}(*{}) -> {}".format(method.__qualname__, i.decode('utf-8'),
+                                     o.decode('utf-8')))
 
 
 class Cache:
@@ -70,7 +71,7 @@ class Cache:
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
-    
+
     def get(self, key, fn=None) -> str:
         """ get method
         """
@@ -78,12 +79,12 @@ class Cache:
         if fn:
             return fn(data)
         return data
-    
+
     def get_str(self, data) -> str:
         """ get_str method
         """
         return data.decode('utf-8')
-    
+
     def get_int(self, data) -> int:
         """ get_int method
         """
