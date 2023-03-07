@@ -4,9 +4,10 @@
 import redis
 import uuid
 from functools import wraps
+from typing import Union, Callable
 
 
-def count_calls(method: callable) -> callable:
+def count_calls(method: Callable) -> Callable:
     """ count_calls method
     """
     key = method.__qualname__
@@ -20,7 +21,7 @@ def count_calls(method: callable) -> callable:
     return wrapper
 
 
-def call_history(method: callable) -> callable:
+def call_history(method: Callable) -> Callable:
     """ call_history method
     """
     inputs = method.__qualname__ + ":inputs"
@@ -37,7 +38,7 @@ def call_history(method: callable) -> callable:
     return wrapper
 
 
-def replay(method: callable) -> None:
+def replay(method: Callable) -> None:
     """ replay method
     """
     inputs = method.__qualname__ + ":inputs"
@@ -65,7 +66,7 @@ class Cache:
 
     @call_history
     @count_calls
-    def store(self, data) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         """ store method
         """
         key = str(uuid.uuid4())
