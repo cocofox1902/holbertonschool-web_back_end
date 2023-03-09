@@ -1,3 +1,5 @@
+-- Write a SQL script that creates a stored procedure ComputeAverageWeightedScoreForUsers
+
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers
 AS
 BEGIN
@@ -21,4 +23,4 @@ BEGIN
     
     -- Drop the temporary table
     DROP TABLE #weighted_scores
-END
+END;

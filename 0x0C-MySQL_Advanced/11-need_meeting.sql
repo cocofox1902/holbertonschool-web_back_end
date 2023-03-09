@@ -1,3 +1,5 @@
+-- Write a SQL script that creates a view need_meeting
+
 CREATE VIEW need_meeting AS
 SELECT name
 FROM students
