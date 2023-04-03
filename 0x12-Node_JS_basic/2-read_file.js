@@ -1,5 +1,6 @@
+const fs = require('fs');
+
 function countStudents(path) {
-  const fs = require('fs');
   fs.readFile(path, 'utf8', (err, data) => {
     if (err) {
       throw new Error('Cannot load the database');
@@ -15,10 +16,10 @@ function countStudents(path) {
       }
     });
     console.log(
-      `Number of students in CS: ${cs.length}. List: ${cs.join(', ')}`
+      `Number of students in CS: ${cs.length}. List: ${cs.join(', ')}`,
     );
     console.log(
-      `Number of students in SWE: ${swe.length}. List: ${swe.join(', ')}`
+      `Number of students in SWE: ${swe.length}. List: ${swe.join(', ')}`,
     );
   });
 }
