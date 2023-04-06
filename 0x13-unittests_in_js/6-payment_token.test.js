@@ -1,14 +1,18 @@
+const mocha = require('mocha');
+const { expect } = require('chai');
+const sinon = require('sinon');
+
 const getPaymentTokenFromAPI = require('./6-payment_token');
 
 describe('getPaymentTokenFromAPI', () => {
-  it('should return a successful response from the API', (done) => {
+  it('should resolve promise if success is true', (done) => {
     getPaymentTokenFromAPI(true)
-      .then((response) => {
-        expect(response).toEqual({ data: 'Successful response from the API' });
+      .then((res) => {
+        expect(res).to.eql({ data: 'Successful response from the API' });
         done();
       })
-      .catch((error) => {
-        done(error);
+      .catch((err) => {
+        done(err);
       });
   });
 });
